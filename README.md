@@ -1,1 +1,1 @@
-# Discrete-age-structured-with-measles-vaccination-strategies
+# Implementation of the age-structured SEIR epidemiology model for measles vaccination strategies![image](https://user-images.githubusercontent.com/85936621/187068634-752bc7a1-5668-4073-88df-3bc54f34a523.png)
