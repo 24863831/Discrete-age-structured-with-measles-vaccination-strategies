@@ -1,1 +1,1 @@
-# Implementation of the age-structured SEIR epidemiology model for measles vaccination strategies
+# Discrete age-structured mathematical model for application of measles vaccination strategies
