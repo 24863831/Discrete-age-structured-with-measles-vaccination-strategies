@@ -10,9 +10,8 @@ library(zoo)
 library(dplyr)
 library(scales)
 
-
 # Create a function to calculate the rate of change in each state variable
-change.dt <- function(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2){
+change.dt11 <- function(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2){
   S1 <- X[1] ; E1 <- X[2] ; I1 <- X[3] ; R1 <- X[4]
   
   dS1dt <- Lambda*(1 - theta1 *sigma1) - beta1*c1*I1*S1 - (1 - theta2 *sigma2)*alpha1*S1 - d1*S1
@@ -25,8 +24,8 @@ change.dt <- function(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1
 }
 
 # A fuction that will update the system at each time step
-updateSystm <- function(X, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2,deltaT){
-  X <- X + change.dt(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2)*deltaT
+updateSystm11 <- function(X, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2,deltaT){
+  X <- X + change.dt11(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2)*deltaT
   return(X)
 }
 
@@ -34,8 +33,7 @@ updateSystm <- function(X, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon
 Systm <- c(200, 80, 30, 1)
 # Per-capital birth rate
 Lambda <- 650
-theta1 <- 0.717
-
+theta1 <- 0.95
 sigma1 <- 0.95
 beta1 <- 0.00000167989
 c1 <- 13.3
@@ -52,30 +50,30 @@ deltaT <- 1
 period <- 2554
 
 # Simulations for age group 1
-epidemic <- data.frame(time=0, S1=Systm[1], E1=Systm[2], I1=Systm[3], R1=Systm[4])
+epidemic11 <- data.frame(time=0, S1=Systm[1], E1=Systm[2], I1=Systm[3], R1=Systm[4])
 
 for(time in seq(from=deltaT, to=period, by=deltaT)){
   
-  Systm <- updateSystm(Systm, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2, 
+  Systm <- updateSystm11(Systm, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2, 
                        deltaT)
-  epidemic <- rbind(epidemic, c(time, Systm))
+  epidemic11 <- rbind(epidemic11, c(time, Systm))
   
 }
 
 
-epi <- epidemic %>%
+epi11 <- epidemic11 %>%
   pivot_longer(S1:R1, values_to="Counts", names_to="State")
 
 ggplot(epi) + geom_line(aes(x=time, y=Counts, col=State))
 view(epi)
 ###################################################################################################################
 view(epidemic)
-epidemic$Epidemic_size = rowSums(epidemic[,c("S1","E1")])
+epidemic11$Epidemic_size11 = rowSums(epidemic[,c("S1","E1")])
 
-epidemic$Total_population_size = rowSums(epidemic[,c("S1","E1","I1", "R1")])
+epidemic11$Total_population_size11 = rowSums(epidemic11[,c("S1","E1","I1", "R1")])
 
 
-epidemic$V1 =  epidemic$R1 / epidemic$Total_population_size
+epidemic11$V1 =  epidemic11$R1 / epidemic11$Total_population_size11
 
 par(mfrow=c(1,2))
 
@@ -99,16 +97,17 @@ plot(rollmean(epidemic$V1, k = 7), rollmean(epidemic$I1, k = 7), type = "l", lwd
 
 ###################################################################################################################
 
-start.date = "20170101"; end.date = "20231230"
+start.date11 = "20170101"; end.date11 = "20231230"
 
-Dates <- seq(ymd(start.date), ymd(end.date), by="days")
+Dates11 <- seq(ymd(start.date11), ymd(end.date11), by="days")
 
-Datetable <- data.frame(Dates)
-View(Datetable)
-view(epidemic)
-EpidemicDate <- cbind(Datetable, epidemic)
-colnames(EpidemicDate)[1] <- "Year"
-view(EpidemicDate)
+Datetable11 <- data.frame(Dates11)
+View(Datetable11)
+view(epidemic11)
+
+EpidemicDate11 <- cbind(Datetable11, epidemic11)
+colnames(EpidemicDate11)[1] <- "Year"
+view(EpidemicDate11)
 
 
 
@@ -117,25 +116,24 @@ view(EpidemicDate)
 
 
 ###################################################################################################################
-par(mfrow=c(1,2))
 
-plot(rollmean(EpidemicDate$Year, k = 7), rollmean(EpidemicDate$V1, k = 7), type = "l", pch = 19, 
-     col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
-     main = "Infants Aged  - 12 months old", ylim = c(0.0, 1.0))
 
-lines(rollmean(EpidemicDate11$Year, k = 7), rollmean(EpidemicDate11$V1, k = 7), type = "l", pch = 18,
-      col = 'darkgreen', lty = 1, lwd = 3)
+plot(rollmean(EpidemicDate11$Year, k = 7), rollmean(EpidemicDate11$V1, k = 7), type = "l", pch = 19, 
+     col = 'red', xlab = 'Year',  ylab = "Proportion of population", ylim = c(0.0, 1.0))
 
-legend(x = "topleft", lty = c(1,1), text.font = 2, lwd = 3,
-       col= c("darkblue","darkgreen"),text.col = "black", 
-       legend=c("Vaccine coverage:0,717 ", "Vaccine coverage:0,95"))
+plot(EpidemicDate$Year, EpidemicDate$V1, type = "l", pch = 19, col = 'red', xlab = 'Year', 
+     ylab = "Proportion of population", ylim = c(-1.0, 1.0))
+
+legend(1, 95, legend=c("Line 1", "Line 2"),
+       col=c("darkblue", "blue"), lty=1:2, cex=0.8)
 
 
 
 
-as.list(quote(x + y))
 
-as.character(sigma)
+
+
+
 
 
 
@@ -151,9 +149,9 @@ view(Da)
 write.csv(EpidemicDate, file = "Epidemic1.csv", row.names = FALSE)
 
 annual.inc <- data.frame(Dates=c("2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"),
-                  Inc1=c(51, 41, 31, 28, 20, 16, 11, 9, 6),
-                  Inc2=c(51, 38, 26, 19, 13, 8, 6, 4, 1))
-          
+                         Inc1=c(51, 41, 31, 28, 20, 16, 11, 9, 6),
+                         Inc2=c(51, 38, 26, 19, 13, 8, 6, 4, 1))
+
 view(annual.inc)
 #annual.inc[order(as.Date(annual.inc$Dates, format="%Y")), ]
 #####################################################################################################################

@@ -1,5 +1,5 @@
 # Create a function to calculate the rate of change in each state variable
-changed.dt2 <- function(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2){
+changed.dt22 <- function(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2){
   S1 <- X[1] ; E1 <- X[2] ; I1 <- X[3] ; R1 <- X[4]
   S2 <- X[1] ; E2 <- X[2] ; I2 <- X[3] ; R2 <- X[4]
   
@@ -15,8 +15,8 @@ changed.dt2 <- function(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilo
 }
 
 # A fuction that will update the system at each time step
-updateSystm2 <- function(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2, deltaT){
-  X <- X + changed.dt2(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2)*deltaT
+updateSystm22 <- function(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2, deltaT){
+  X <- X + changed.dt22(X, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2)*deltaT
   return(X)
 }
 
@@ -25,7 +25,7 @@ Systm2 <- c(200, 80, 30, 1)
 # Per-capita birth rate
 alpha1 <- 0.0385
 alpha2 <- 0.00385
-theta2 <- 0.764
+theta2 <- 0.95
 sigma2 <- 0.95
 beta2 <- 0.000000515425
 c2 <- 6.02
@@ -40,28 +40,28 @@ period <- 2554
 
 
 # Simulations for age group 2
-epidemic2 <- data.frame(time=0, S2=Systm2[1], E2=Systm2[2], I2=Systm2[3], R2=Systm2[4])
+epidemic22 <- data.frame(time=0, S2=Systm2[1], E2=Systm2[2], I2=Systm2[3], R2=Systm2[4])
 
 for(time in seq(from=deltaT, to=period, by=deltaT)){
   
-  Systm2 <- updateSystm2(Systm2, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2, deltaT)
-  epidemic2 <- rbind(epidemic2, c(time, Systm2))
+  Systm2 <- updateSystm22(Systm2, alpha1, alpha2, theta2, sigma2, beta2, c2, d2, epsilon2, gamma2, mu2, deltaT)
+  epidemic22 <- rbind(epidemic22, c(time, Systm2))
   
 }
 
-epi2 <- epidemic2 %>%
+epi22 <- epidemic22 %>%
   pivot_longer(S2:R2, values_to="Counts", names_to="State")
 
 ggplot(epi2) + geom_line(aes(x=time, y=Counts, col=State))
 
 ######################################################################################################################
-view(epidemic2)
-epidemic2$Epidemic_size2 = rowSums(epidemic2[,c("S2","E2")])
+view(epidemic22)
+epidemic22$Epidemic_size22 = rowSums(epidemic22[,c("S2","E2")])
 
-epidemic2$Total_population_size2 = rowSums(epidemic2[,c("S2", "E2","I2","R2")])
+epidemic22$Total_population_size2 = rowSums(epidemic22[,c("S2", "E2","I2","R2")])
 
 
-epidemic2$V2 =  epidemic2$R2 / epidemic2$Total_population_size2
+epidemic22$V2 =  epidemic22$R2 / epidemic22$Total_population_size2
 
 plot(epidemic2$V2, epidemic2$Epidemic_size2, type = "l", lwd = 2,  main = "Vaccination Proportion", 
      xlab = expression(paste("Vaccination proportion")),
@@ -71,8 +71,8 @@ plot(epidemic2$V2, epidemic2$Epidemic_size2, type = "l", lwd = 2,  main = "Vacci
 epidemic2$Epidemic_size22 = rowSums(epidemic2[,c("I2","E2")])
 
 plot(epidemic2$V2, epidemic2$Epidemic_size2, type = "b", lwd = 2,  main = "Vaccination Proportion", 
-    xlab = expression(paste("Vaccination proportion")),
-    ylab = "Epidemic size", xlim = c(0.0, 1.0))
+     xlab = expression(paste("Vaccination proportion")),
+     ylab = "Epidemic size", xlim = c(0.0, 1.0))
 
 
 ######################################################################################################################
@@ -89,18 +89,14 @@ Dates <- seq(ymd(start.date), ymd(end.date), by="days")
 
 Datetable <- data.frame(Dates)
 
-EpidemicDate2 <- cbind(Datetable, epidemic2)
-colnames(EpidemicDate2)[1] <- "Year"
-view(EpidemicDate2$V2)
+EpidemicDate22 <- cbind(Datetable, epidemic22)
+colnames(EpidemicDate22)[1] <- "Year"
+view(EpidemicDate22$V2)
 
 
-plot(rollmean(EpidemicDate2$Year, k=7), rollmean(EpidemicDate2$V2, k=7), type = "l", pch = 19, 
+plot(EpidemicDate2$Year, EpidemicDate2$V2, type = "l", pch = 19, 
      col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
      main = "Infants Aged 1 - 5 years")
 
-lines(rollmean(EpidemicDate22$Year, k = 7), rollmean(EpidemicDate22$V2, k = 7), type = "l", pch = 18,
+lines(EpidemicDate22$Year, EpidemicDate22$V2, type = "l", pch = 18,
       col = 'darkgreen', lty = 1, lwd = 3)
-
-legend(x = "bottomright", lty = c(1,1), text.font = 2, lwd = 3,
-       col= c("darkblue","darkgreen"),text.col = "black", 
-       legend=c("Vaccine coverage:0,717 ", "Vaccine coverage:0,95"))
