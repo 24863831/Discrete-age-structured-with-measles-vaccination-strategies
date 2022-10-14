@@ -3,13 +3,14 @@ install.packages("zoo")
 install.packages("dplyr")
 install.packages("lubridate")
 install.packages("scales")
+install.packages("r2symbols")
 
 library(tidyverse)
 library(lubridate)
 library(zoo)
 library(dplyr)
 library(scales)
-
+library(r2symbols)
 
 # Create a function to calculate the rate of change in each state variable
 change.dt <- function(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2){
@@ -77,6 +78,9 @@ epidemic$Total_population_size = rowSums(epidemic[,c("S1","E1","I1", "R1")])
 
 epidemic$V1 =  epidemic$R1 / epidemic$Total_population_size
 
+epidemic$Incidences =  epidemic$I1 / epidemic$Total_population_size
+
+
 par(mfrow=c(1,2))
 
 plot(epidemic$V1, epidemic$Epidemic_size, type = "l", pch=19, lwd = 2, 
@@ -104,16 +108,9 @@ start.date = "20170101"; end.date = "20231230"
 Dates <- seq(ymd(start.date), ymd(end.date), by="days")
 
 Datetable <- data.frame(Dates)
-View(Datetable)
-view(epidemic)
+
 EpidemicDate <- cbind(Datetable, epidemic)
 colnames(EpidemicDate)[1] <- "Year"
-view(EpidemicDate)
-
-
-
-
-
 
 
 ###################################################################################################################
@@ -121,58 +118,31 @@ par(mfrow=c(1,2))
 
 plot(rollmean(EpidemicDate$Year, k = 7), rollmean(EpidemicDate$V1, k = 7), type = "l", pch = 19, 
      col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
-     main = "Infants Aged  - 12 months old", ylim = c(0.0, 1.0))
+     main = "Infants Aged 6 - 12 months old", ylim = c(0.0, 1.0))
 
 lines(rollmean(EpidemicDate11$Year, k = 7), rollmean(EpidemicDate11$V1, k = 7), type = "l", pch = 18,
       col = 'darkgreen', lty = 1, lwd = 3)
 
 legend(x = "topleft", lty = c(1,1), text.font = 2, lwd = 3,
        col= c("darkblue","darkgreen"),text.col = "black", 
-       legend=c("Vaccine coverage:0,717 ", "Vaccine coverage:0,95"))
+       legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
 
 
 
-
-as.list(quote(x + y))
-
-as.character(sigma)
-
-
-
-
-
-
-start.date1 = "20170101"; end.date1 = "20251231"
-da <- seq(ymd(start.date1), ymd(end.date1), by="days")
-Da <- data.frame(da)
-view(Da)
 #####################################################################################################################
 
-write.csv(EpidemicDate, file = "Epidemic1.csv", row.names = FALSE)
+plot(rollmean(EpidemicDate$Year, k = 365), rollmean(EpidemicDate$Incidences, k = 365), type = "l", pch = 19, 
+     col = 'darkblue', lty = 1, lwd = 3, xlab = "Year",  ylab = "Annual Incidences",
+     main = "Proportion of age group Incedences (6 - 12 months old)")
 
-annual.inc <- data.frame(Dates=c("2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"),
-                  Inc1=c(51, 41, 31, 28, 20, 16, 11, 9, 6),
-                  Inc2=c(51, 38, 26, 19, 13, 8, 6, 4, 1))
-          
-view(annual.inc)
-#annual.inc[order(as.Date(annual.inc$Dates, format="%Y")), ]
+lines(rollmean(EpidemicDate11$Year, k = 365), rollmean(EpidemicDate11$Incidences1, k = 365), type = "l", pch = 18,
+      col = 'darkgreen', lty = 1, lwd = 3)
+
+legend(x = "topright", lty = c(1,1), text.font = 2, lwd = 3,
+       col= c("darkblue","darkgreen"),text.col = "black", 
+       legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
 #####################################################################################################################
 
-plot(annual.inc$Dates, annual.inc$Inc1, type="b", pch=19, col="red", xlab="Year", ylab="Annual Incidences")
-# Add a line
-lines(annual.inc$Dates, annual.inc$Inc2, pch=18, col="blue", type="b", lty=2)
-# Add a legend
-legend(1, 95, legend=c("Line 1", "Line 2"),
-       col=c("red", "blue"), lty=1:2, cex=0.8)
 
 
-
-# Generate some data
-x<-1:10; y1=x*x; y2=2*y1
-plot(x, y1, type="b", pch=19, col="red", xlab="x", ylab="y")
-# Add a line
-lines(x, y2, pch=18, col="blue", type="b", lty=2)
-# Add a legend
-legend(1, 95, legend=c("Line 1", "Line 2"),
-       col=c("red", "blue"), lty=1:2, cex=0.8)
 

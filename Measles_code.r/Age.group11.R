@@ -36,7 +36,7 @@ Lambda <- 650
 theta1 <- 0.95
 sigma1 <- 0.95
 beta1 <- 0.00000167989
-c1 <- 13.3
+c1 <- 15
 alpha1 <- 0.038
 d1 <- 0.00029
 epsilon1 <- 0.72
@@ -74,6 +74,7 @@ epidemic11$Total_population_size11 = rowSums(epidemic11[,c("S1","E1","I1", "R1")
 
 
 epidemic11$V1 =  epidemic11$R1 / epidemic11$Total_population_size11
+epidemic11$Incidences1 =  epidemic11$I1 / epidemic11$Total_population_size
 
 par(mfrow=c(1,2))
 
@@ -128,49 +129,9 @@ legend(1, 95, legend=c("Line 1", "Line 2"),
        col=c("darkblue", "blue"), lty=1:2, cex=0.8)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-start.date1 = "20170101"; end.date1 = "20251231"
-da <- seq(ymd(start.date1), ymd(end.date1), by="days")
-Da <- data.frame(da)
-view(Da)
 #####################################################################################################################
 
-write.csv(EpidemicDate, file = "Epidemic1.csv", row.names = FALSE)
 
-annual.inc <- data.frame(Dates=c("2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"),
-                         Inc1=c(51, 41, 31, 28, 20, 16, 11, 9, 6),
-                         Inc2=c(51, 38, 26, 19, 13, 8, 6, 4, 1))
-
-view(annual.inc)
-#annual.inc[order(as.Date(annual.inc$Dates, format="%Y")), ]
 #####################################################################################################################
 
-plot(annual.inc$Dates, annual.inc$Inc1, type="b", pch=19, col="red", xlab="Year", ylab="Annual Incidences")
-# Add a line
-lines(annual.inc$Dates, annual.inc$Inc2, pch=18, col="blue", type="b", lty=2)
-# Add a legend
-legend(1, 95, legend=c("Line 1", "Line 2"),
-       col=c("red", "blue"), lty=1:2, cex=0.8)
-
-
-
-# Generate some data
-x<-1:10; y1=x*x; y2=2*y1
-plot(x, y1, type="b", pch=19, col="red", xlab="x", ylab="y")
-# Add a line
-lines(x, y2, pch=18, col="blue", type="b", lty=2)
-# Add a legend
-legend(1, 95, legend=c("Line 1", "Line 2"),
-       col=c("red", "blue"), lty=1:2, cex=0.8)
 
