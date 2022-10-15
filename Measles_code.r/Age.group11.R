@@ -1,15 +1,3 @@
-install.packages("tidyverse")
-install.packages("zoo")
-install.packages("dplyr")
-install.packages("lubridate")
-install.packages("scales")
-
-library(tidyverse)
-library(lubridate)
-library(zoo)
-library(dplyr)
-library(scales)
-
 # Create a function to calculate the rate of change in each state variable
 change.dt11 <- function(X, Lambda, theta1, sigma1, beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2){
   S1 <- X[1] ; E1 <- X[2] ; I1 <- X[3] ; R1 <- X[4]
@@ -55,7 +43,7 @@ epidemic11 <- data.frame(time=0, S1=Systm[1], E1=Systm[2], I1=Systm[3], R1=Systm
 for(time in seq(from=deltaT, to=period, by=deltaT)){
   
   Systm <- updateSystm11(Systm, Lambda, theta1, sigma1,beta1, c1, alpha1, d1, epsilon1, gamma1, mu1, theta2, sigma2, 
-                       deltaT)
+                         deltaT)
   epidemic11 <- rbind(epidemic11, c(time, Systm))
   
 }
@@ -63,11 +51,8 @@ for(time in seq(from=deltaT, to=period, by=deltaT)){
 
 epi11 <- epidemic11 %>%
   pivot_longer(S1:R1, values_to="Counts", names_to="State")
-
-ggplot(epi) + geom_line(aes(x=time, y=Counts, col=State))
-view(epi)
 ###################################################################################################################
-view(epidemic)
+
 epidemic11$Epidemic_size11 = rowSums(epidemic[,c("S1","E1")])
 
 epidemic11$Total_population_size11 = rowSums(epidemic11[,c("S1","E1","I1", "R1")])
@@ -76,25 +61,9 @@ epidemic11$Total_population_size11 = rowSums(epidemic11[,c("S1","E1","I1", "R1")
 epidemic11$V1 =  epidemic11$R1 / epidemic11$Total_population_size11
 epidemic11$Incidences1 =  epidemic11$I1 / epidemic11$Total_population_size
 
-par(mfrow=c(1,2))
-
-plot(epidemic$V1, epidemic$Epidemic_size, type = "l", pch=19, lwd = 2, 
-     main = "Vaccination proportion for age group 1", xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size", xlim = c(0.0, 1.0))
-
-###################################################################################################################
-epidemic$Epidemic_size1 = rowSums(epidemic[,c("I1","E1")])
-
-plot(Epide, epidemic$Epidemic_size, type = "l", pch=19, lwd = 2, 
-     main = "Vaccination proportion for age group 1", xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size")
-
-
 ###################################################################################################################
 
-plot(rollmean(epidemic$V1, k = 7), rollmean(epidemic$I1, k = 7), type = "l", lwd = 2, main = "Vacc", 
-     xlab = expression(paste("Vaccination proportion")),
-     ylab = "Peak incidences", xlim = c(0.0, 1.0))
+###################################################################################################################
 
 ###################################################################################################################
 
@@ -103,35 +72,10 @@ start.date11 = "20170101"; end.date11 = "20231230"
 Dates11 <- seq(ymd(start.date11), ymd(end.date11), by="days")
 
 Datetable11 <- data.frame(Dates11)
-View(Datetable11)
-view(epidemic11)
 
 EpidemicDate11 <- cbind(Datetable11, epidemic11)
 colnames(EpidemicDate11)[1] <- "Year"
-view(EpidemicDate11)
-
-
-
-
-
-
 
 ###################################################################################################################
-
-
-plot(rollmean(EpidemicDate11$Year, k = 7), rollmean(EpidemicDate11$V1, k = 7), type = "l", pch = 19, 
-     col = 'red', xlab = 'Year',  ylab = "Proportion of population", ylim = c(0.0, 1.0))
-
-plot(EpidemicDate$Year, EpidemicDate$V1, type = "l", pch = 19, col = 'red', xlab = 'Year', 
-     ylab = "Proportion of population", ylim = c(-1.0, 1.0))
-
-legend(1, 95, legend=c("Line 1", "Line 2"),
-       col=c("darkblue", "blue"), lty=1:2, cex=0.8)
-
-
-#####################################################################################################################
-
-
-#####################################################################################################################
 
 

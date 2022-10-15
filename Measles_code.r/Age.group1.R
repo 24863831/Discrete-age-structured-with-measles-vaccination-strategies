@@ -66,11 +66,8 @@ for(time in seq(from=deltaT, to=period, by=deltaT)){
 
 epi <- epidemic %>%
   pivot_longer(S1:R1, values_to="Counts", names_to="State")
-
-ggplot(epi) + geom_line(aes(x=time, y=Counts, col=State))
-view(epi)
 ###################################################################################################################
-view(epidemic)
+
 epidemic$Epidemic_size = rowSums(epidemic[,c("S1","E1")])
 
 epidemic$Total_population_size = rowSums(epidemic[,c("S1","E1","I1", "R1")])
@@ -80,26 +77,9 @@ epidemic$V1 =  epidemic$R1 / epidemic$Total_population_size
 
 epidemic$Incidences =  epidemic$I1 / epidemic$Total_population_size
 
-
-par(mfrow=c(1,2))
-
-plot(epidemic$V1, epidemic$Epidemic_size, type = "l", pch=19, lwd = 2, 
-     main = "Vaccination proportion for age group 1", xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size", xlim = c(0.0, 1.0))
-
-###################################################################################################################
-epidemic$Epidemic_size1 = rowSums(epidemic[,c("I1","E1")])
-
-plot(Epide, epidemic$Epidemic_size, type = "l", pch=19, lwd = 2, 
-     main = "Vaccination proportion for age group 1", xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size")
-
-
 ###################################################################################################################
 
-plot(rollmean(epidemic$V1, k = 7), rollmean(epidemic$I1, k = 7), type = "l", lwd = 2, main = "Vacc", 
-     xlab = expression(paste("Vaccination proportion")),
-     ylab = "Peak incidences", xlim = c(0.0, 1.0))
+###################################################################################################################
 
 ###################################################################################################################
 
@@ -114,7 +94,6 @@ colnames(EpidemicDate)[1] <- "Year"
 
 
 ###################################################################################################################
-par(mfrow=c(1,2))
 
 plot(rollmean(EpidemicDate$Year, k = 7), rollmean(EpidemicDate$V1, k = 7), type = "l", pch = 19, 
      col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
@@ -123,7 +102,7 @@ plot(rollmean(EpidemicDate$Year, k = 7), rollmean(EpidemicDate$V1, k = 7), type 
 lines(rollmean(EpidemicDate11$Year, k = 7), rollmean(EpidemicDate11$V1, k = 7), type = "l", pch = 18,
       col = 'darkgreen', lty = 1, lwd = 3)
 
-legend(x = "topleft", lty = c(1,1), text.font = 2, lwd = 3,
+legend(x = "topright", lty = c(1,1), text.font = 2, lwd = 3,
        col= c("darkblue","darkgreen"),text.col = "black", 
        legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
 
@@ -133,7 +112,7 @@ legend(x = "topleft", lty = c(1,1), text.font = 2, lwd = 3,
 
 plot(rollmean(EpidemicDate$Year, k = 365), rollmean(EpidemicDate$Incidences, k = 365), type = "l", pch = 19, 
      col = 'darkblue', lty = 1, lwd = 3, xlab = "Year",  ylab = "Annual Incidences",
-     main = "Proportion of age group Incedences (6 - 12 months old)")
+     main = "Proportion of age group Incedences (6 - 12 months old)", ylim = c(0.0, 0.02))
 
 lines(rollmean(EpidemicDate11$Year, k = 365), rollmean(EpidemicDate11$Incidences1, k = 365), type = "l", pch = 18,
       col = 'darkgreen', lty = 1, lwd = 3)
@@ -142,7 +121,6 @@ legend(x = "topright", lty = c(1,1), text.font = 2, lwd = 3,
        col= c("darkblue","darkgreen"),text.col = "black", 
        legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
 #####################################################################################################################
-
 
 
 
