@@ -52,10 +52,7 @@ for(time in seq(from=deltaT, to=period, by=deltaT)){
 epi22 <- epidemic22 %>%
   pivot_longer(S2:R2, values_to="Counts", names_to="State")
 
-ggplot(epi2) + geom_line(aes(x=time, y=Counts, col=State))
-
 ######################################################################################################################
-view(epidemic22)
 epidemic22$Epidemic_size22 = rowSums(epidemic22[,c("S2","E2")])
 
 epidemic22$Total_population_size2 = rowSums(epidemic22[,c("S2", "E2","I2","R2")])
@@ -64,24 +61,9 @@ epidemic22$Total_population_size2 = rowSums(epidemic22[,c("S2", "E2","I2","R2")]
 epidemic22$V2 =  epidemic22$R2 / epidemic22$Total_population_size2
 epidemic22$Incidences22 =  epidemic22$I2 / epidemic22$Total_population_size2
 
-plot(epidemic2$V2, epidemic2$Epidemic_size2, type = "l", lwd = 2,  main = "Vaccination Proportion", 
-     xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size", xlim = c(0.0, 1.0))
-
-######################################################################################################################
-epidemic2$Epidemic_size22 = rowSums(epidemic2[,c("I2","E2")])
-
-plot(epidemic2$V2, epidemic2$Epidemic_size2, type = "b", lwd = 2,  main = "Vaccination Proportion", 
-     xlab = expression(paste("Vaccination proportion")),
-     ylab = "Epidemic size", xlim = c(0.0, 1.0))
-
-
 ######################################################################################################################
 
-plot(rollmean(epidemic2$V2, k = 7), rollmean(epidemic2$I2, k = 7), type = "l", lwd = 2,  main = "h", 
-     xlab = expression(paste("Vaccination proportion")),
-     ylab = "Peak incidences", xlim = c(0.0, 1.0))
-
+######################################################################################################################
 
 ######################################################################################################################
 start.date = "20170101"; end.date = "20231230"
@@ -92,30 +74,5 @@ Datetable <- data.frame(Dates)
 
 EpidemicDate22 <- cbind(Datetable, epidemic22)
 colnames(EpidemicDate22)[1] <- "Year"
-view(EpidemicDate22$V2)
 
 
-plot(EpidemicDate2$Year, EpidemicDate2$V2, type = "l", pch = 19, 
-     col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
-     main = "Infants Aged 1 - 5 years")
-
-lines(EpidemicDate22$Year, EpidemicDate22$V2, type = "l", pch = 18,
-      col = 'darkgreen', lty = 1, lwd = 3)
-
-legend(x = "bottomright", lty = c(1,1), text.font = 2, lwd = 3,
-       col= c("darkblue","darkgreen"),text.col = "black", 
-       legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
-
-#####################################################################################################################
-#####################################################################################################################
-
-plot(EpidemicDate2$I2, EpidemicDate2$Epidemic_size2, type = "l", pch = 19, 
-     col = 'darkblue', lty = 1, lwd = 3, xlab = 'Year',  ylab = "Proportion of population",
-     main = "Infants Aged 1 - 5 years")
-
-lines(EpidemicDate22$Year, EpidemicDate22$V2, type = "l", pch = 18,
-      col = 'darkgreen', lty = 1, lwd = 3)
-
-legend(x = "bottomright", lty = c(1,1), text.font = 2, lwd = 3,
-       col= c("darkblue","darkgreen"),text.col = "black", 
-       legend=c("Vaccine coverange:0,717 ", "Vaccine coverage:0,95"))
